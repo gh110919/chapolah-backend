@@ -1,0 +1,27 @@
+[
+  {
+    "sport_type": "number",
+    "division": "number",
+    "location": "string",
+    "date": "string",
+    "player1": {
+      "fio": "string",
+      "username": "string",
+      "date": "string",
+      "team": "string"
+    },
+    "player2": {
+      "fio": "string",
+      "username": "string",
+      "date": "string",
+      "team": "string"
+    }
+  },
+  {
+    "event_id": "number",
+    "event_date": "number",
+    "event_type": "number",
+    "team_id": "number",
+    "player_id": "number"
+  }
+]
