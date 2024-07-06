@@ -14,9 +14,10 @@
   "name": "backend",
   "private": true,
   "scripts": {
-    "start": "nodemon",
+    "docker-compose:build": "docker-compose build",
+    "drop": "ts-node ./src/database/drop.ts",
     "migrate": "ts-node ./src/database/migrate.ts",
-    "drop": "ts-node ./src/database/drop.ts"
+    "start": "nodemon"
   },
   "type": "commonjs",
   "version": "1.0.1"

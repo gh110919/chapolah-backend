@@ -3,7 +3,7 @@ import { db } from "./db-middleware";
 
 (async () => {
   try {
-    await db.schema.createTable(
+    await db.schema.createTableIfNotExists(
       "matches_preporations",
       (table: Knex.CreateTableBuilder) => {
         table.increments("id").primary();
@@ -14,7 +14,7 @@ import { db } from "./db-middleware";
       }
     );
 
-    await db.schema.createTable("players", (table: Knex.CreateTableBuilder) => {
+    await db.schema.createTableIfNotExists("players", (table: Knex.CreateTableBuilder) => {
       table.increments("id").primary();
       table.string("fio");
       table.string("username");
@@ -22,7 +22,7 @@ import { db } from "./db-middleware";
       table.string("team");
     });
 
-    await db.schema.createTable(
+    await db.schema.createTableIfNotExists(
       "match_events",
       (table: Knex.CreateTableBuilder) => {
         table.increments("id").primary();
@@ -33,6 +33,12 @@ import { db } from "./db-middleware";
         table.integer("player_id");
       }
     );
+
+    await db.schema.createTableIfNotExists("teams", (table: Knex.CreateTableBuilder) => {
+      table.increments("id").primary();
+      table.string("firstTeam").unique();
+      table.string("secondTeam").unique();
+    });
 
     console.log("Таблицы успешно созданы!");
   } catch (error) {

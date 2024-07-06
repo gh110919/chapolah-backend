@@ -15,6 +15,9 @@ export const endpoints: Endpoint[] = [
   {
     endpoint: "/match_events",
     table: "match_events",
+  }, {
+    endpoint: "/teams",
+    table: "teams",
   },
 ];
 
