@@ -1,11 +1,7 @@
 import { Request, Response } from "express";
+import { TService } from "./service";
 
-export type TService<T> = {
-  create: (data: T) => Promise<T>;
-  read: (id?: number, query?: any, body?: any) => Promise<T | T[] | null>;
-  update: (id: number, data: T) => Promise<T | null>;
-  delete: (id: number) => Promise<T | null>;
-};
+export type TypeArrayNull<T> = T | T[] | null;
 
 const control = async <T>(response: Response, data: Promise<T>) => {
   try {
@@ -18,28 +14,28 @@ const control = async <T>(response: Response, data: Promise<T>) => {
 const set =
   <T>(service: TService<T>) =>
   async (request: Request, response: Response) => {
-    control<T>(response, service.create(request.body));
+    control<T>(response, service.create({ payload: request.body }));
   };
 
 const get =
   <T>(service: TService<T>) =>
   async (request: Request, response: Response) => {
     request.params.id
-      ? control<T | T[] | null>(
+      ? control<TypeArrayNull<T>>(
           response,
-          service.read(Number(request.params.id), undefined, undefined)
+          service.read({ id: Number(request.params.id) })
         )
       : request.query
-      ? control<T | T[] | null>(
+      ? control<TypeArrayNull<T>>(
           response,
-          service.read(undefined, request.query, undefined)
+          service.read({ query: request.query })
         )
       : request.body
-      ? control<T | T[] | null>(
+      ? control<TypeArrayNull<T>>(
           response,
-          service.read(undefined, undefined, request.body)
+          service.read({ body: request.body })
         )
-      : control<T | T[] | null>(response, service.read());
+      : control<TypeArrayNull<T>>(response, service.read({}));
   };
 
 const put =
@@ -47,7 +43,10 @@ const put =
   async (request: Request, response: Response) => {
     control<T | null>(
       response,
-      service.update(Number(request.params.id || request.body.id), request.body)
+      service.update({
+        id: Number(request.params.id || request.body.id),
+        payload: request.body,
+      })
     );
   };
 
@@ -56,7 +55,7 @@ const cut =
   async (request: Request, response: Response) => {
     control<T | null>(
       response,
-      service.delete(Number(request.params.id || request.body.id))
+      service.delete({ id: Number(request.params.id || request.body.id) })
     );
   };
 

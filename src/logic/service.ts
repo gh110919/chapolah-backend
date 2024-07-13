@@ -1,40 +1,43 @@
-export type TModel<T> = {
-  create: (data: T) => Promise<T>;
-  read: (id?: number, query?: any, body?: any) => Promise<T | T[] | null>;
-  update: (id: number, data?: T) => Promise<T | null>;
-  delete: (id: number) => Promise<T | null>;
+import { TypeArrayNull } from "./controller";
+import { TCreate, TDelete, TModel, TRead, TUpdate } from "./model";
+
+export type TService<T> = {
+  create: ({ payload }: TCreate<any>) => Promise<T>;
+  read: ({ id, query, body }: TRead) => Promise<TypeArrayNull<T>>;
+  update: ({ id, payload }: TUpdate<any>) => Promise<T | null>;
+  delete: ({ id }: TDelete) => Promise<T | null>;
 };
 
 const set =
   <T>(model: TModel<T>) =>
-  async (data: T) =>
-    model.create(data);
+  async ({ payload }: TCreate<T>) =>
+    model.create({ payload });
 
 const get =
   <T>(model: TModel<T>) =>
-  async (id?: number, query?: any, body?: any) => {
+  async ({ id, query, body }: TRead) => {
     return id
-      ? model.read(id, undefined, undefined)
+      ? model.read({ id })
       : query
-      ? model.read(undefined, query, undefined)
+      ? model.read({ query })
       : body
-      ? model.read(undefined, undefined, body)
-      : model.read();
+      ? model.read({ body })
+      : model.read({});
   };
 
 const put =
   <T>(model: TModel<T>) =>
-  async (id: number, data: any) => {
-    return model.update(id, data);
+  async ({ id, payload }: TUpdate<T>) => {
+    return model.update({ id, payload });
   };
 
 const cut =
   <T>(model: TModel<T>) =>
-  async (id: number) => {
+  async ({ id }: TDelete) => {
     if (!id) {
       throw new Error("не указан id");
     }
-    return model.delete(id);
+    return model.delete({ id });
   };
 
 export const service = <T>(model: TModel<T>) => ({
