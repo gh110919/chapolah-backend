@@ -1,13 +1,13 @@
-version: "3"
 services:
   web:
     build: .
-    image: production_build_image
-    container_name: production_build_container
+    image: backend_image
+    container_name: backend_build_container
     restart: always
     stdin_open: true
     tty: true
     volumes:
       - "../env:/home/env"
-    ports:
+    ports: 
+      - "3000:3000"
       - "80:80"

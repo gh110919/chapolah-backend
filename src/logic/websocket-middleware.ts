@@ -1,12 +1,13 @@
 import { WebSocket } from "ws";
-import { model } from "./model";
+import { model, TypeArrayNull } from "./model";
 import { service, TService } from "./service";
+import http from "http";
 
-export const websocketMiddleware = (() => {
-  const ws = new WebSocket.Server({ port: 81 });
+export const websocketMiddleware = (server: http.Server) => {
+  const ws = new WebSocket.Server({ server });
 
   type TActions = "create" | "read" | "update" | "delete";
-  type TMessage = { action: TActions; table?: string; payload: any };
+  type TMessage = { action: TActions; table?: string; payload?: any };
   type TPayload = { success: boolean; message: any };
 
   const serializing = (payload: TPayload) => {
@@ -17,24 +18,27 @@ export const websocketMiddleware = (() => {
     return JSON.parse(message);
   };
 
-  const wsController = async <T>(
+  const wsController = <T>(
     { action, payload }: TMessage,
     service: TService<T>
   ) => {
-    return action === "create"
-      ? await service.create({ payload })
-      : action === "read"
-      ? await service.read({ body: payload })
-      : action === "update"
-      ? await service.update({ id: payload.id, payload })
-      : action === "delete"
-      ? await service.delete({ id: payload.id })
-      : null;
+    return new Promise<TypeArrayNull<T>>((resolve, reject) => {
+      action === "create"
+        ? resolve(service.create({ payload }))
+        : action === "read"
+        ? resolve(service.read({ body: payload }))
+        : action === "update"
+        ? resolve(service.update({ id: payload.id, payload }))
+        : action === "delete"
+        ? resolve(service.delete({ id: payload.id }))
+        : reject(null);
+    });
   };
 
   try {
     ws.on("connection", (connection) => {
-      const sending = (payload: any) => connection.send(serializing(payload));
+      const sending = (payload: TPayload) =>
+        connection.send(serializing(payload));
 
       connection.on("message", (message: string) => {
         const data = structuring(message);
@@ -66,4 +70,4 @@ export const websocketMiddleware = (() => {
   } catch (error) {
     console.error(`Исключение вебсокет-сервера: ${error}`);
   }
-})();
+};

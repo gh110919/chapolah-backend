@@ -1,25 +1,37 @@
 import { Request, Response } from "express";
+import { TypeArrayNull } from "./model";
 import { TService } from "./service";
-
-export type TypeArrayNull<T> = T | T[] | null;
+import { teapot } from "./teapot";
 
 const control = async <T>(response: Response, data: Promise<T>) => {
   try {
-    response.status(200).json({ success: true, message: await data });
+    response.status(200).json({
+      success: true,
+      message: await data,
+    });
   } catch (error) {
-    response.status(500).json({ success: false, message: error });
+    console.error(error);
+
+    response.status(500).json({
+      success: false,
+      message: `Исключение рест-сервера ${error}`,
+    });
   }
 };
 
 const set =
   <T>(service: TService<T>) =>
   async (request: Request, response: Response) => {
+    teapot(request, response);
+
     control<T>(response, service.create({ payload: request.body }));
   };
 
 const get =
   <T>(service: TService<T>) =>
   async (request: Request, response: Response) => {
+    teapot(request, response);
+
     request.params.id
       ? control<TypeArrayNull<T>>(
           response,
@@ -41,6 +53,8 @@ const get =
 const put =
   <T>(service: TService<T>) =>
   async (request: Request, response: Response) => {
+    teapot(request, response);
+
     control<T | null>(
       response,
       service.update({
@@ -53,6 +67,8 @@ const put =
 const cut =
   <T>(service: TService<T>) =>
   async (request: Request, response: Response) => {
+    teapot(request, response);
+
     control<T | null>(
       response,
       service.delete({ id: Number(request.params.id || request.body.id) })

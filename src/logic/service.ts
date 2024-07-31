@@ -1,5 +1,11 @@
-import { TypeArrayNull } from "./controller";
-import { TCreate, TDelete, TModel, TRead, TUpdate } from "./model";
+import {
+  TCreate,
+  TDelete,
+  TModel,
+  TRead,
+  TUpdate,
+  TypeArrayNull,
+} from "./model";
 
 export type TService<T> = {
   create: ({ payload }: TCreate<any>) => Promise<T>;

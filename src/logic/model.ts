@@ -1,10 +1,12 @@
+import { v4 } from "uuid";
 import { db } from "../database/db-middleware";
-import { TypeArrayNull } from "./controller";
 
 export type TCreate<T> = { payload: T };
 export type TRead = { id?: number; query?: any; body?: any };
 export type TUpdate<T> = { id: number; payload: T };
 export type TDelete = { id: number };
+
+export type TypeArrayNull<T> = T | T[] | null;
 
 export type TModel<T> = {
   create: ({ payload }: TCreate<T>) => Promise<T>;
@@ -16,8 +18,9 @@ export type TModel<T> = {
 const set =
   <T>(table: string) =>
   async ({ payload }: TCreate<T>): Promise<T> => {
-    const [id] = await db(table).insert(payload);
-    return { id, ...payload };
+    const id = v4();
+    await db(table).insert({ ...payload, id });
+    return await db(table).where({ id }).first();
   };
 
 const get =
