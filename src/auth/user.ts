@@ -16,9 +16,8 @@ export const user = async (req: Request, res: Response, next: NextFunction) => {
       if (!user) {
         return res.status(401).json({
           success: false,
-          message: {
-            error: "Неверные учетные данные",
-          },
+          message:
+            "Исключение при получении данных пользователя:  Неверные учетные данные",
         });
       } else {
         const { id, username, role } = user;
@@ -32,8 +31,11 @@ export const user = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({
-      error: `Исключение при получении данных пользователя: ${error}`,
-    });
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: `Исключение при получении данных пользователя: ${error}`,
+      });
   }
 };

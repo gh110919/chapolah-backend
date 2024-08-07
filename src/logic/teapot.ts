@@ -8,9 +8,7 @@ export const teapot = (req: Request, res: Response) => {
   ) {
     return res.status(418).json({
       success: false,
-      message: {
-        error: "Cервер не может приготовить кофе, потому что он чайник !!!",
-      },
+      message: "Cервер не может приготовить кофе, потому что он чайник !!!",
     });
   }
 };

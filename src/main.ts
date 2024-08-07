@@ -11,7 +11,7 @@ import { websocketMiddleware } from "./logic/websocket-middleware";
     try {
       server
         .use(json())
-        .use(cors())
+        .use(cors({ origin: "http://localhost", credentials: true }))
         .use(cookieParser())
         .set("trust proxy", "linklocal")
         .use("/api/auth", authMiddleware)
@@ -25,7 +25,7 @@ import { websocketMiddleware } from "./logic/websocket-middleware";
 
   const wsServer = http.createServer(server);
 
-  wsServer.listen(80, () => {
+  wsServer.listen(8080, () => {
     websocketMiddleware(wsServer);
   });
 })(express());

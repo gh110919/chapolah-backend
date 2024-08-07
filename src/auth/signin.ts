@@ -25,9 +25,7 @@ export const signin = async (req: Request, res: Response) => {
     if (!userUsername || !passwordCheck) {
       return res.status(401).json({
         success: false,
-        message: {
-          error: "Неверные учетные данные",
-        },
+        message: "Исключение при входе: Неверные учетные данные",
       });
     } else {
       const payload = { id, username: userUsername, role };

@@ -12,7 +12,7 @@ const control = async <T>(response: Response, data: Promise<T>) => {
   } catch (error) {
     console.error(error);
 
-    response.status(500).json({
+    return response.status(500).json({
       success: false,
       message: `Исключение рест-сервера ${error}`,
     });
@@ -35,7 +35,7 @@ const get =
     request.params.id
       ? control<TypeArrayNull<T>>(
           response,
-          service.read({ id: Number(request.params.id) })
+          service.read({ id: String(request.params.id) })
         )
       : request.query
       ? control<TypeArrayNull<T>>(
@@ -58,7 +58,7 @@ const put =
     control<T | null>(
       response,
       service.update({
-        id: Number(request.params.id || request.body.id),
+        id: String(request.params.id || request.body.id),
         payload: request.body,
       })
     );
@@ -71,7 +71,7 @@ const cut =
 
     control<T | null>(
       response,
-      service.delete({ id: Number(request.params.id || request.body.id) })
+      service.delete({ id: String(request.params.id || request.body.id) })
     );
   };
 

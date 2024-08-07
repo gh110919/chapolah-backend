@@ -2,9 +2,9 @@ import { v4 } from "uuid";
 import { db } from "../database/db-middleware";
 
 export type TCreate<T> = { payload: T };
-export type TRead = { id?: number; query?: any; body?: any };
-export type TUpdate<T> = { id: number; payload: T };
-export type TDelete = { id: number };
+export type TRead = { id?: string; query?: any; body?: any };
+export type TUpdate<T> = { id: string; payload: T };
+export type TDelete = { id: string };
 
 export type TypeArrayNull<T> = T | T[] | null;
 

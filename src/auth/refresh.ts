@@ -38,7 +38,7 @@ export const refresh = async (req: Request, res: Response) => {
     console.error(error);
 
     return res.status(500).json({
-      success: true,
+      success: false,
       message: `Исключение при обновлении токена ${error}`,
     });
   }
