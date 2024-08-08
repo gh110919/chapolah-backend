@@ -2,12 +2,19 @@ services:
   web:
     build: .
     image: backend_image
-    container_name: backend_build_container
+    container_name: backend_container
     restart: always
     stdin_open: true
     tty: true
+    network_mode: "host"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: 2
+          memory: 2G
     volumes:
       - "../env:/home/env"
-    ports: 
+    ports:
       - "3000:3000"
       - "8080:8080"

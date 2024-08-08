@@ -11,7 +11,7 @@ import { websocketMiddleware } from "./logic/websocket-middleware";
     try {
       server
         .use(json())
-        .use(cors({ origin: "http://localhost", credentials: true }))
+        .use(cors({ origin: "http://127.0.0.1", credentials: true }))
         .use(cookieParser())
         .set("trust proxy", "linklocal")
         .use("/api/auth", authMiddleware)

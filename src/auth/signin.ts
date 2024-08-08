@@ -10,7 +10,17 @@ export const signin = async (req: Request, res: Response) => {
 
     const table = db("users");
     const { username, password } = req.body;
-
+ 
+    if (!username) {
+      throw new Error("Username is required");
+    }
+    
+    const user = await db("users").where({ username }).first();
+    
+    if (!user) {
+      throw new Error("User not found");
+    }
+    
     const {
       id,
       username: userUsername,
@@ -18,7 +28,16 @@ export const signin = async (req: Request, res: Response) => {
       role,
       access_key,
       refresh_key,
-    } = await db("users").where({ username }).first();
+    } = user;
+
+    // const {
+    //   id,
+    //   username: userUsername,
+    //   password: userPassword,
+    //   role,
+    //   access_key,
+    //   refresh_key,
+    // } = await db("users").where({ username }).first();
 
     const passwordCheck = await compare(password, userPassword);
 
